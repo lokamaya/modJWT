@@ -20,7 +20,7 @@
  *
  * @package modjwt
  */
-require_once '/jwt/firebase/jwt.class.php';
+require_once dirname(__FILE__) . '/jwt/firebase/jwt.class.php';
 use Firebase\JWT\JWT as FirebaseJWT;
 
 class modFirebaseJWT extends FirebaseJWT {
