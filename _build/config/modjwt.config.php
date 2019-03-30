@@ -259,6 +259,7 @@ $components = array(
             'alias' => 'modjwt',
             'richtext' => false,
             'published' => true,
+            'template' => 0, 
         ),
         'token' => array( /* idea: json page */
             'pagetitle' => 'Token',
@@ -267,6 +268,7 @@ $components = array(
             'parent' => 'modjwt',
             'richtext' => false,
             'published' => true,
+            'template' => 0, 
             'content_type' => 7,
         ),
         'validate' => array( /* idea: json page */
@@ -276,6 +278,7 @@ $components = array(
             'parent' => 'modjwt',
             'richtext' => false,
             'published' => true,
+            'template' => 0, 
             'content_type' => 7,
         ),
         'custom' => array( /* idea: json page */
@@ -286,6 +289,7 @@ $components = array(
             'richtext' => false,
             'published' => true,
             'container' => true,
+            'template' => 0, 
             'content_type' => 7,
         ),
     ),

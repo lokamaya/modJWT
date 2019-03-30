@@ -37,7 +37,8 @@ $(document).ready(function() {
                                 localStorage.setItem("token", _token);
                                 $('#loggerData').text("Token:\n" + _token);
                             } else {
-                                msgs +=  " \n - seems you went to the wrong page";
+                                msgs +=  " \n - Verify URL: " + _actionVal;
+                                msgs +=  " \n - Go to manager: edit the 'formaction' of blue link above!";
                             }
                         } else {
                             msgs +=  " \n - unknown error";

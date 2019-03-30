@@ -74,10 +74,8 @@
 $output = '';
 
 // Core path
-$corePath  = $modx->getOption('modjwt.corePath', null, $modx->getOption('core_path', null, MODX_CORE_PATH) . 'components/modjwt/');
-$assetsUrl = $modx->getOption('modjwt.assetUrl', null, $modx->getOption('assets_url', null, MODX_ASSETS_URL) . 'components/modjwt/');
+$corePath  = $modx->getOption('core_path', null, MODX_CORE_PATH) . 'components/modjwt/';
 $scriptProperties['corePath'] = $corePath;
-$scriptProperties['assetsUrl'] = $assetsUrl;
 $scriptProperties['requestType'] = 'encode';
 
 /** @var modJWT $modJWT */

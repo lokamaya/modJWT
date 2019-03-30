@@ -11,6 +11,7 @@
 
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>var pageID = [[*id]];</script>
 
 [[$modjwtCssSample]]
 
@@ -26,16 +27,16 @@
                 <br />
                 <div class="text-center" style="border:1px solid #ddd; background:#eee;">
 
-                  <!-- change #index.php?id=7 to the valid resourceid of Token, but do not remove the hash "#" /-->
-                  <button id="getToken" type="button" class="btn btn-link" value="create" formaction="index.php?id=7" title="Get a new Token">[create]</button>
+                  <!-- change #index.php?id=OfToken to the valid resourceid or URL /-->
+                  <button id="getToken" type="button" class="btn btn-link" value="create" formaction="index.php?id=OfToken" title="Get a new Token">[create]</button>
 
-                  <!-- change #index.php?id=8 to the valid resourceid of Validate, but do not remove the hash "#" /-->
-                  <button id="valToken" type="button" class="btn btn-link" value="validate" formaction="index.php?id=8" title="Validating Token">[validate]</button>
+                  <!-- change #index.php?id=OfValidate to the valid resourceid or URL /-->
+                  <button id="valToken" type="button" class="btn btn-link" value="validate" formaction="index.php?id=OfValidate" title="Validating Token">[validate]</button>
                   
-                  <!-- change #index.php?id=9 to the valid resourceid of Validate, but do not remove the hash "#" /-->
-                  <button id="cusToken" type="button" class="btn btn-link" value="custom" formaction="index.php?id=9" title="Get custom value">[custom]</button>
+                  <!-- change #index.php?id=OfCustom  to the valid resourceid or URL /-->
+                  <button id="cusToken" type="button" class="btn btn-link" value="custom" formaction="index.php?id=OfCustom" title="Get custom value">[custom]</button>
 
-                  <button id="remToken" type="button" class="btn btn-link" value="destroy" formaction="self" title="Destroying Token" style="color:red">[destroy]</button>
+                  <button id="remToken" type="button" class="btn btn-link" value="destroy" formaction="#self" title="Destroying Token" style="color:red">[destroy]</button>
                 </div>
                 <br />
                 <div class="form-group">

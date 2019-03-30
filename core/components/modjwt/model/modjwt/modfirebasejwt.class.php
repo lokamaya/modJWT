@@ -145,7 +145,7 @@ class modFirebaseJWT extends FirebaseJWT {
         
         $_tokenArray = explode('.', $token);
         if (count($_tokenArray) != 3) {
-            return $this->outputError($this->modx->lexicon('modjwt_error_token_token') . $token, 400);
+            return $this->outputError($this->modx->lexicon('modjwt_error_token_invalid') . $token, 400);
         }
         
         list($headb64, $bodyb64, $cryptob64) = $_tokenArray;

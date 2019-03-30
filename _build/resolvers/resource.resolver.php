@@ -69,26 +69,6 @@ if($object->xpdo) {
                   'parent' => 'ModJWT',
                   'template' => 0,
                 ),
-                4 =>  array (
-                  'pagetitle' => 'ModJWT',
-                  'parent' => '0',
-                  'template' => 0,
-                ),
-                5 =>  array (
-                  'pagetitle' => 'Token',
-                  'parent' => 'ModJWT',
-                  'template' => 0,
-                ),
-                6 =>  array (
-                  'pagetitle' => 'Validate',
-                  'parent' => 'ModJWT',
-                  'template' => 0,
-                ),
-                7 =>  array (
-                  'pagetitle' => 'Custom',
-                  'parent' => 'ModJWT',
-                  'template' => 0,
-                ),
             );
 
             if (is_array($intersects)) {
@@ -101,7 +81,9 @@ if($object->xpdo) {
                     if (! $resource) {
                         continue;
                     }
-                    if ($fields['template'] == 'default') {
+                    if ($fields['template'] == 0) {
+                        $resource->set('template', 0);
+                    } elseif ($fields['template'] == 'default') {
                         $resource->set('template', $modx->getOption('default_template'));
                     } else {
                         $templateObj = $modx->getObject('modTemplate', array('templatename' => $fields['template']));

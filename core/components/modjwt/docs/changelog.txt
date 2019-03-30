@@ -1,5 +1,7 @@
 Changelog for modJWT
 
-modJWT 1.0.0
+modJWT 1.0.0-beta
 ---------------------------------
-Initial Version
+Initial Version.
+See https://github.com/lokamaya/modJWT for more information.
+
