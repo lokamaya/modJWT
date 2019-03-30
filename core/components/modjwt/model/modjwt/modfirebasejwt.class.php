@@ -20,7 +20,7 @@
  *
  * @package modjwt
  */
-require_once '/jwt/firebase/JWT.php';
+require_once '/jwt/firebase/jwt.class.php';
 use Firebase\JWT\JWT as FirebaseJWT;
 
 class modFirebaseJWT extends FirebaseJWT {
@@ -66,11 +66,9 @@ class modFirebaseJWT extends FirebaseJWT {
             'corePath' => $corePath,
             'modelPath' => $corePath . 'model/',
             'assetsUrl' => $assetsUrl,
-            'cssUrl' => $assetsUrl . 'css/',
-            'jsUrl' => $assetsUrl . 'js/',
         ], $config);
         
-        $this->modx->lexicon->load('modjwt:default');
+        $this->modx->lexicon->load('modjwt:firebase');
         
         static::$timestamp = time();
     }

@@ -28,16 +28,24 @@ $chunks = array();
 $chunks[1] = $modx->newObject('modChunk');
 $chunks[1]->fromArray(array (
   'id' => 1,
-  'description' => 'Sample CSS for modJWT',
+  'property_preprocess' => false,
   'name' => 'modjwtCssSample',
+  'description' => 'Sample CSS for modJWT',
+  'properties' => 
+  array (
+  ),
 ), '', true, true);
 $chunks[1]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/modjwtcsssample.chunk.html'));
 
 $chunks[2] = $modx->newObject('modChunk');
 $chunks[2]->fromArray(array (
   'id' => 2,
-  'description' => 'Sample script for modJWT',
+  'property_preprocess' => false,
   'name' => 'modjwtScriptSample',
+  'description' => 'Sample script for modJWT',
+  'properties' => 
+  array (
+  ),
 ), '', true, true);
 $chunks[2]->setContent(file_get_contents($sources['source_core'] . '/elements/chunks/modjwtscriptsample.chunk.html'));
 

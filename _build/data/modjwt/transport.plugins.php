@@ -28,8 +28,13 @@ $plugins = array();
 $plugins[1] = $modx->newObject('modPlugin');
 $plugins[1]->fromArray(array (
   'id' => 1,
-  'description' => 'Description for Plugin one',
+  'property_preprocess' => false,
   'name' => 'jwtOnAuthorization',
+  'description' => 'Not used. Reserved for further development.',
+  'properties' => 
+  array (
+  ),
+  'disabled' => true,
 ), '', true, true);
 $plugins[1]->setContent(file_get_contents($sources['source_core'] . '/elements/plugins/jwtonauthorization.plugin.php'));
 

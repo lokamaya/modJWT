@@ -28,13 +28,13 @@ $events = array();
 $events[1] = $modx->newObject('modEvent');
 $events[1]->fromArray(array (
   'name' => 'OnJWTBeforeFire',
-  'groupname' => 'modJWT',
   'service' => 1,
+  'groupname' => 'modJWT',
 ), '', true, true);
 $events[2] = $modx->newObject('modEvent');
 $events[2]->fromArray(array (
   'name' => 'OnJWTAuthenticated',
-  'groupname' => 'modJWT',
   'service' => 2,
+  'groupname' => 'modJWT',
 ), '', true, true);
 return $events;

@@ -52,19 +52,42 @@ if($object->xpdo) {
                 0 =>  array (
                   'pagetitle' => 'ModJWT',
                   'parent' => '0',
-                  'template' => 'default',
+                  'template' => 0,
                 ),
                 1 =>  array (
                   'pagetitle' => 'Token',
-                  'longtitle' => 'Issuing Token - JSON',
-                  'parent' => 'modjwt',
-                  'template' => 'default',
+                  'parent' => 'ModJWT',
+                  'template' => 0,
                 ),
                 2 =>  array (
                   'pagetitle' => 'Validate',
-                  'longtitle' => 'Validating Token - JSON',
-                  'parent' => 'modjwt',
-                  'template' => 'default',
+                  'parent' => 'ModJWT',
+                  'template' => 0,
+                ),
+                3 =>  array (
+                  'pagetitle' => 'Custom',
+                  'parent' => 'ModJWT',
+                  'template' => 0,
+                ),
+                4 =>  array (
+                  'pagetitle' => 'ModJWT',
+                  'parent' => '0',
+                  'template' => 0,
+                ),
+                5 =>  array (
+                  'pagetitle' => 'Token',
+                  'parent' => 'ModJWT',
+                  'template' => 0,
+                ),
+                6 =>  array (
+                  'pagetitle' => 'Validate',
+                  'parent' => 'ModJWT',
+                  'template' => 0,
+                ),
+                7 =>  array (
+                  'pagetitle' => 'Custom',
+                  'parent' => 'ModJWT',
+                  'template' => 0,
                 ),
             );
 

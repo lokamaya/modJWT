@@ -1,10 +1,4 @@
 <?php
-namespace Firebase\JWT;
-use \DomainException;
-use \InvalidArgumentException;
-use \UnexpectedValueException;
-use \DateTime;
-
 /**
  * JSON Web Token implementation, based on this spec:
  * https://tools.ietf.org/html/rfc7519
@@ -25,9 +19,13 @@ use \DateTime;
  * @link     https://github.com/lokamaya/modJWT
 **/
 
+namespace Firebase\JWT;
+use \DomainException;
+use \InvalidArgumentException;
+use \UnexpectedValueException;
+use \DateTime;
 
-class JWT
-{
+class JWT {
 
     /**
      * When checking nbf, iat or expiration times,

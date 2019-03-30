@@ -57,58 +57,58 @@ $components = array(
 
     'newSystemSettings' => array(
         'modjwt.enabled' => array( // key
-            'key'         => 'modjwt.enabled',
-            'name'        => 'Panic Button',
+            'key'       => 'modjwt.enabled',
+            'name'      => 'Panic Button',
             'description' => 'One click setting to disable modJWT without unistall it',
-            'xtype'       => 'combo-boolean',
-            'value'       => true,
-            'area'        => 'modjwt_setting',
-            'namespace'   => 'modjwt',
+            'xtype'     => 'combo-boolean',
+            'value'     => true,
+            'area'      => 'modjwt_setting',
+            'namespace' => 'modjwt',
         ),
         'modjwt.corePath' => array( // key
-            'key'         => 'modjwt.corePath',
-            'name'        => 'Development Path',
-            'description' => 'Path for development purpose',
-            'xtype'       => 'textfield',
-            'value'       => '',
-            'area'        => 'modjwt_setting',
-            'namespace'   => 'modjwt',
+            'key'       => 'modjwt.corePath',
+            'name'      => 'Development Core Path',
+            'description' => 'Core path for development purpose',
+            'xtype'     => 'textfield',
+            'value'     => '',
+            'area'      => 'modjwt_setting',
+            'namespace' => 'modjwt',
         ),
         'modjwt.assetPath' => array( // key
-            'key'         => 'modjwt.assetPath',
-            'name'        => 'Development Assets Path',
+            'key'       => 'modjwt.assetPath',
+            'name'      => 'Development Assets Path',
             'description' => 'Asset path for development purpose',
-            'xtype'       => 'textfield',
-            'value'       => '',
-            'area'        => 'modjwt_setting',
-            'namespace'   => 'modjwt',
+            'xtype'     => 'textfield',
+            'value'     => '',
+            'area'      => 'modjwt_setting',
+            'namespace' => 'modjwt',
         ),
         'modjwt.secretkey' => array( // key
-            'key'         => 'modjwt.secretkey',
-            'name'        => 'Secret Key',
+            'key'       => 'modjwt.secretkey',
+            'name'      => 'Secret Key',
             'description' => 'Use this as <strong>Secret Key</strong> for symmetric algorithm (i.e. HS256)',
-            'xtype'       => 'textfield',
-            'value'       => 'my-secret-key-please-change-' . substr(md5(rand()),1,7),
-            'area'        => 'modjwt_key',
-            'namespace'   => 'modjwt',
+            'xtype'     => 'textfield',
+            'value'     => 'my-secret-key-please-change-' . substr(md5(rand()),1,7),
+            'area'      => 'modjwt_key',
+            'namespace' => 'modjwt',
         ),
         'modjwt.privatekey' => array( // key
-            'key'         => 'modjwt.privatekey',
-            'name'        => 'Private Key',
+            'key'       => 'modjwt.privatekey',
+            'name' => 'Private Key',
             'description' => 'Absolute path to <strong>private key</strong> file for issuing asymmetric algorithm (i.e. RS256)',
-            'xtype'       => 'textfield',
-            'value'       => '',
-            'area'        => 'modjwt_key',
-            'namespace'   => 'modjwt',
+            'xtype'     => 'textfield',
+            'value'     => '',
+            'area'      => 'modjwt_key',
+            'namespace' => 'modjwt',
         ),
         'modjwt.publickey' => array( // key
-            'key'         => 'modjwt.publickey',
-            'name'        => 'Public Key',
+            'key'       => 'modjwt.publickey',
+            'name' => 'Public Key',
             'description' => 'Absolute path to <strong>public key</strong> file for validating asymmetric algorithm (i.e. RS256)',
-            'xtype'       => 'textfield',
-            'value'       => '',
-            'area'        => 'modjwt_key',
-            'namespace'   => 'modjwt',
+            'xtype'     => 'textfield',
+            'value'     => '',
+            'area'      => 'modjwt_key',
+            'namespace' => 'modjwt',
         ),
     ),
 
@@ -207,6 +207,15 @@ $components = array(
                 ),
             ),
 
+            'jwtdecoderunsnippet' => array(
+                'category' => 'modJWT',
+                'description' => 'Output custom value after validating Token',
+                'static' => false,
+                'propertySets' => array(
+                    'jwtdecodeprops'
+                ),
+            ),
+
             'jwtencode' => array( /* modjwt with static and property set(s)  */
                 'category' => 'modJWT',
                 'description' => 'Issuing or encoding JWT Token.',
@@ -220,7 +229,7 @@ $components = array(
         'plugins' => array(
             'jwtOnAuthorization' => array( /* modjwt with static, events, and property sets */
                 'category' => 'modJWT',
-                'description' => 'Not used. Reserved for further development.',
+                'description' => 'Description for Plugin one',
                 'static' => false,
                 'propertySets' => array( /* all property sets to be connected to element */
                     'jwtpluginprops',
@@ -259,6 +268,7 @@ $components = array(
             'alias' => 'modjwt',
             'richtext' => false,
             'published' => true,
+            'container' => true,
         ),
         'token' => array( /* idea: json page */
             'pagetitle' => 'Token',
@@ -267,6 +277,7 @@ $components = array(
             'parent' => 'modjwt',
             'richtext' => false,
             'published' => true,
+            'container' => true,
             'content_type' => 7,
         ),
         'validate' => array( /* idea: json page */
@@ -276,6 +287,7 @@ $components = array(
             'parent' => 'modjwt',
             'richtext' => false,
             'published' => true,
+            'container' => true,
             'content_type' => 7,
         ),
         'custom' => array( /* idea: json page */
@@ -298,7 +310,6 @@ $components = array(
         'en' => array(
             'default',
             'properties',
-            'firebase',
         ),
     ),
     /* ********************************************* */
@@ -312,10 +323,10 @@ $components = array(
 
     'assetsDirs' => array(
         /* If true, a default (empty) CSS file will be created */
-        'css' => false,
+        'css' => true,
 
         /* If true, a default (empty) JS file will be created */
-        'js' => false,
+        'js' => true,
 
         'images' => false,
         'audio' => false,
@@ -335,10 +346,14 @@ $components = array(
        (no trailing slash on directory)
        if 'createCmpFiles is true, these will be ignored.
     */
-    'jsFiles' => array(),
+    'jsFiles' => array(
+        'sample-modjwt.js',
+    ),
 
     /* Desired CSS files */
-    'cssFiles' => array(),
+    'cssFiles' => array(
+        'sample-modjwt.css',
+    ),
 
     /* ********************************************* */
     /* Define basic directories and files to be created in project*/
@@ -418,7 +433,7 @@ $components = array(
      * Set to array() if there are no classes. */
     'classes' => array(
         'modFirebaseJWT' => 'modjwt:modfirebasejwt',
-        'JWT' => 'modjwt/jwt/firebase:JWT',
+        'JWT' => 'modjwt.jwt.firebase:JWT',
 
         /* (optional) - Specify methods for each class.
            if 'function' is missing, 'public function ' will
@@ -500,9 +515,9 @@ $components = array(
      * Search also checks with '$this->' prefix -- no need to add it here. */
     'scriptPropertiesAliases' => array(
         'props',
+        'configs',
         'keys',
         'config',
-        'configs',
         'scriptProperties'
     ),
 );

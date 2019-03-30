@@ -21,9 +21,8 @@
  * @package modjwt
  */
 
+$_lang['modjwt_prop_modjwt'] = 'modJWT';
 $_lang['modjwt_prop_algorithm'] = 'Algorithm for JWT';
-$_lang['modjwt_prop_sortby'] = 'The field to sort by.';
-$_lang['modjwt_prop_sortdir'] = 'The direction to sort by.';
-$_lang['modjwt_prop_tpl'] = 'The chunk to use for each row of Items.';
 $_lang['modjwt_prop_toPlaceholder'] = 'If set, will output the content to the placeholder specified in this property, rather than outputting the content directly.';
 
+//ERROR CODE

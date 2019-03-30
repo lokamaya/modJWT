@@ -31,16 +31,31 @@ $propertySets[1]->fromArray(array (
   'name' => 'jwtdecodeprops',
   'description' => 'jwtDecode properties',
 ), '', true, true);
+
+$properties = include $sources['data'].'properties/properties.jwtdecodeprops.propertyset.php';
+$propertySets[1]->setProperties($properties);
+unset($properties);
+
 $propertySets[2] = $modx->newObject('modPropertySet');
 $propertySets[2]->fromArray(array (
   'id' => 2,
-  'name' => 'jwtencodeprops',
-  'description' => 'jwtEncode properties',
-), '', true, true);
-$propertySets[3] = $modx->newObject('modPropertySet');
-$propertySets[3]->fromArray(array (
-  'id' => 3,
   'name' => 'jwtpluginprops',
   'description' => 'JWT plugin propertis',
 ), '', true, true);
+
+$properties = include $sources['data'].'properties/properties.jwtpluginprops.propertyset.php';
+$propertySets[2]->setProperties($properties);
+unset($properties);
+
+$propertySets[3] = $modx->newObject('modPropertySet');
+$propertySets[3]->fromArray(array (
+  'id' => 3,
+  'name' => 'jwtencodeprops',
+  'description' => 'jwtEncode properties',
+), '', true, true);
+
+$properties = include $sources['data'].'properties/properties.jwtencodeprops.propertyset.php';
+$propertySets[3]->setProperties($properties);
+unset($properties);
+
 return $propertySets;

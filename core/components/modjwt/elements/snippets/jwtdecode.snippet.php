@@ -56,6 +56,7 @@
  * &subField                string     optional    Default: email of visitor/user (options: username, email, userid, sessionid)
  * &aud                     string     optional    URI of the audience/server 
  * &jti                     bool       optional    Default: false (if true, auto-populated by sessionid)
+ * &leeway                  integer    optional    Default: 0, the amount of seconds to move or act that is available; no need in same server
  *
  *
  * USAGE:

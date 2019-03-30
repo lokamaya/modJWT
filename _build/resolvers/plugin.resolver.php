@@ -49,13 +49,13 @@ if (!function_exists('checkFields')) {
 $newEvents = array (
                 0 =>  array (
                   'name' => 'OnJWTBeforeFire',
-                  'groupname' => 'modJWT',
                   'service' => 1,
+                  'groupname' => 'modJWT',
                 ),
                 1 =>  array (
                   'name' => 'OnJWTAuthenticated',
-                  'groupname' => 'modJWT',
                   'service' => 2,
+                  'groupname' => 'modJWT',
                 ),
             );
 
@@ -81,13 +81,13 @@ if ($object->xpdo) {
             $intersects = array (
                 0 =>  array (
                   'pluginid' => 'jwtOnAuthorization',
-                  'event' => 'OnJWTBeforeFire',
+                  'event' => 'OnJWTAuthenticated',
                   'priority' => '0',
                   'propertyset' => '0',
                 ),
                 1 =>  array (
                   'pluginid' => 'jwtOnAuthorization',
-                  'event' => 'OnJWTAuthenticated',
+                  'event' => 'OnJWTBeforeFire',
                   'priority' => '0',
                   'propertyset' => '0',
                 ),
