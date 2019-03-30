@@ -259,6 +259,7 @@ $components = array(
             'alias' => 'modjwt',
             'richtext' => false,
             'published' => true,
+            'isfolder' => true,
             'template' => 0, 
         ),
         'token' => array( /* idea: json page */
@@ -288,7 +289,6 @@ $components = array(
             'parent' => 'modjwt',
             'richtext' => false,
             'published' => true,
-            'container' => true,
             'template' => 0, 
             'content_type' => 7,
         ),
