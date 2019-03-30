@@ -1,4 +1,5 @@
-# ModJWT: A MODx extra to works with JSON Web Token (JWT)
+# ModJWT:
+A MODx extra to works with JSON Web Token (JWT)
 =========================================================
 
 Documentation: https://github.com/lokamaya/modJWT (next on this)
