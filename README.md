@@ -1,4 +1,4 @@
-# ModJWT:
+# ModJWT
 A MODx extra to works with JSON Web Token (JWT)
 =========================================================
 
