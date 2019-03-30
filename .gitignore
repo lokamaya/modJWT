@@ -4,4 +4,6 @@ config.inc.php
 build.php
 build.schema.php
 config.core.php
+example.config.php
+current.project.php
 lcobucci/   

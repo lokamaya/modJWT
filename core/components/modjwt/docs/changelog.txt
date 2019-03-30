@@ -1,0 +1,5 @@
+Changelog for modJWT
+
+modJWT 1.0.0
+---------------------------------
+Initial Version
