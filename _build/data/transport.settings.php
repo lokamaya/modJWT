@@ -78,7 +78,7 @@ $systemSettings[5]->fromArray(array (
 $systemSettings[6] = $modx->newObject('modSystemSetting');
 $systemSettings[6]->fromArray(array (
   'key' => 'modjwt.secretkey',
-  'value' => 'my-secret-key-please-change-66e3c74',
+  'value' => 'my-secret-key-please-change-' . substr(md5(rand()),1,7),
   'xtype' => 'textfield',
   'namespace' => 'modjwt',
   'area' => 'modjwt_key',

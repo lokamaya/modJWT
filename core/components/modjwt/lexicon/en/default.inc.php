@@ -23,11 +23,8 @@
 
 /** DEFAULT **/
 $_lang['modjwt'] = 'modJWT';
-$_lang['modjwt_error_class']         = 'Could not load modJWT class!';
-$_lang['modjwt_secretkey_not_match'] = 'A secret key not match!';
-$_lang['modjwt_keypair_not_match']   = 'Private key and public key not match!';
-
-
+$_lang['modjwt_error_class']      = 'Could not load modJWT class!';
+$_lang['modjwt_error_unavailable'] = 'A secret key not match!';
 
 /** SETTING **/
 $_lang['area_modjwt_setting'] = 'Setting';
@@ -37,7 +34,7 @@ $_lang['area_modjwt_configs'] = 'Configuration';
 $_lang['area_modjwt_props'] = 'Properties';
 
 $_lang['setting_modjwt.enabled'] = 'Panic Button';
-$_lang['setting_modjwt.enabled_desc'] = 'Disable modJWT without uninstalling it';
+$_lang['setting_modjwt.enabled_desc'] = 'One click setting to disable modJWT without unistall it';
 
 $_lang['setting_modjwt.assetPath'] = 'Development Assets URI';
 $_lang['setting_modjwt.assetPath_desc'] = 'URL to modJWT development assets';
@@ -49,7 +46,7 @@ $_lang['setting_modjwt.secretkey'] = 'Secret Key';
 $_lang['setting_modjwt.secretkey_desc'] = 'Use this as <strong>Secret Key</strong> for symmetric algorithm (i.e. HS256)';
 
 $_lang['setting_modjwt.privatekey'] = 'Private Key';
-$_lang['setting_modjwt.private_desc'] = 'Use <strong>Private Key</strong> as key pair with <strong>Public Key</strong> for asymmetric algorithm (i.e. RS256)';
+$_lang['setting_modjwt.privatekey_desc'] = 'Absolute path to <strong>private key</strong> file for issuing asymmetric algorithm (i.e. RS256)';
 
 $_lang['setting_modjwt.publickey'] = 'Public Key';
-$_lang['setting_modjwt.public_desc'] = 'Use <strong>Public Key</strong> as key pair with <strong>Private Key</strong> for asymmetric algorithm (i.e. RS256)';
+$_lang['setting_modjwt.publickey_desc'] = 'Absolute path to <strong>public key</strong> file for validating asymmetric algorithm (i.e. RS256)';

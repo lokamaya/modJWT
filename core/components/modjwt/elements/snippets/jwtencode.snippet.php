@@ -89,24 +89,24 @@ $modJWT = $modx->getService(
 );
 
 if (!$modJWT) {
-    $output = 'Could not load modJWT class!';
+    $log = 'Could not load modJWT class!';
     
-    $modx->setPlaceholder($debugPlaceholder, $output);
-    $modx->log(modX::LOG_LEVEL_ERROR, $output);
+    $modx->setPlaceholder($debugPlaceholder, $log);
+    $modx->log(modX::LOG_LEVEL_ERROR, $log);
     
     return json_encode(array(
         '_valid'     => 0,
         'status'     => 503,
         'statusText' => 'Service Unavailable',
-        'errorLog'   => $output
+        'errorLog'   => $log
     ));
 }
 
 $output='';
-
 if ($token = $modJWT->encodeJWT()) {  //success
   $output = $modJWT->jsonData;
 } else {                              //error
   $output = $modJWT->errorData;
 }
+
 return $output;

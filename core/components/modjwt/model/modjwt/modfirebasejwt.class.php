@@ -131,6 +131,7 @@ class modFirebaseJWT extends FirebaseJWT {
         $jwtType   = strtoupper($this->config['typ']) == 'JWS' ? 'JWS' : 'JWT';
         $algorithm = strtoupper($this->config['alg']);
         $timestamp = static::$timestamp;
+        $_x = $this->modx;
         
         $token = $this->getTokenClaim($this->config['method']);
         //die($this->config['method']);
@@ -144,7 +145,7 @@ class modFirebaseJWT extends FirebaseJWT {
         
         $_tokenArray = explode('.', $token);
         if (count($_tokenArray) != 3) {
-            return $this->outputError("Invalid Token: $token", 400);
+            return $this->outputError($this->modx->lexicon('modjwt_error_token_token') . $token, 400);
         }
         
         list($headb64, $bodyb64, $cryptob64) = $_tokenArray;
@@ -156,34 +157,34 @@ class modFirebaseJWT extends FirebaseJWT {
         $signature = static::urlsafeB64Decode($cryptob64);
         
         if ($signature === false) {
-            return $this->outputError("Invalid signature!", 400);
+            return $this->outputError($this->modx->lexicon('modjwt_error_signature_invalid'), 400);
         }
         
         if (!parent::verify("$headb64.$bodyb64", $signature, $secretk, $header->alg)) {
-            return $this->outputError("Signature verification failed", 400);
+            return $this->outputError($this->modx->lexicon('modjwt_error_signature_failed'), 400);
         }
         
         // if signature OK, more on header
         if ($header === null) {
-            return $this->outputError("Header error: invalid header encoding!", 400);
+            return $this->outputError($this->modx->lexicon('modjwt_error_header_empty'), 400);
         }
         
         if (empty($header->alg)) {
-            return $this->outputError("Header error: invalid header algorithm (alg) is empty", 400);
+            return $this->outputError($this->modx->lexicon('modjwt_error_alg_empty'), 400);
         }
         
         if (empty(static::$supported_algs[$header->alg])) {
-            return $this->outputError("Header error: invalid header algorithm '".$header->alg."' is not supported", 400);
+            return $this->outputError(sprintf($this->modx->lexicon('modjwt_error_alg_nosupport'), $header->alg), 400);
         }
         
         if (is_array($secretk) || $secretk instanceof \ArrayAccess) {
             if (isset($header->kid)) {
                 if (!isset($secretk[$header->kid])) {
-                    return $this->outputError("'kid' invalid, unable to lookup correct key", 400);
+                    return $this->outputError($this->modx->lexicon('modjwt_error_kid_invalid'), 400);
                 }
                 $secretk = $secretk[$header->kid];
             } else {
-                return $this->outputError("'kid' empty, unable to lookup correct key", 400);
+                return $this->outputError($this->modx->lexicon('modjwt_error_kid_empty'), 400);
             }
         }
         
@@ -191,19 +192,19 @@ class modFirebaseJWT extends FirebaseJWT {
         $payload = static::jsonDecode(static::urlsafeB64Decode($bodyb64));
         
         if ($payload === null) {
-            return $this->outputError("Payload error: invalid claims encoding!", 400);
+            return $this->outputError($this->modx->lexicon('modjwt_error_payload_claim'), 400);
         } else {
             // is expired?
             if (isset($payload->exp) && ($timestamp - static::$leeway) >= $payload->exp) {
-                return $this->outputError('Expired token', 400);
+                return $this->outputError($this->modx->lexicon('modjwt_error_token_expire'), 400);
             }
             // is not before time?
             if (isset($payload->nbf) && $payload->nbf > ($timestamp + static::$leeway)) {
-                return $this->outputError('Cannot handle token prior to ' . date(DateTime::ISO8601, $payload->nbf), 400);
+                return $this->outputError(sprintf($this->modx->lexicon('modjwt_error_nbf_timestamp'), date(DateTime::ISO8601, $payload->nbf)), 400);
             }
             // valid time?
             if (isset($payload->iat) && $payload->iat > ($timestamp + static::$leeway)) {
-                return $this->outputError('Invalid time: cannot handle token prior to ' . date(DateTime::ISO8601, $payload->iat), 400);
+                return $this->outputError(sprintf($this->modx->lexicon('modjwt_error_iat_timestamp'), date(DateTime::ISO8601, $payload->iat)), 400);
             }
         }
         
@@ -423,25 +424,25 @@ class modFirebaseJWT extends FirebaseJWT {
     **/
     public function outputError($log='', $errorCode=403) {
         $errorMessage = array(
-            400 => 'Bad Request',
-            401 => 'Unauthorized',
-            402 => 'Payment Required',
-            403 => 'Forbidden',
-            404 => 'Not Found',
-            405 => 'Method Not Allowed',
-            406 => 'Not Acceptable',
-            407 => 'Proxy Authentication Required',
-            408 => 'Request Timeout',
-            409 => 'Conflict',
-            410 => 'Gone',
-            429 => 'Too Many Requests',
-            413 => 'Payload Too Large',
-            431 => 'Request Header Fields Too Large',
-            500 => 'Internal Server Error',
-            501 => 'Not Implemented',
-            502 => 'Bad Gateway',
-            503 => 'Service Unavailable',
-            504 => 'Gateway Timeout',
+            400 => $this->modx->lexicon('modjwt_status_400'),
+            401 => $this->modx->lexicon('modjwt_status_401'),
+            402 => $this->modx->lexicon('modjwt_status_402'),
+            403 => $this->modx->lexicon('modjwt_status_403'),
+            404 => $this->modx->lexicon('modjwt_status_404'),
+            405 => $this->modx->lexicon('modjwt_status_405'),
+            406 => $this->modx->lexicon('modjwt_status_406'),
+            407 => $this->modx->lexicon('modjwt_status_407'),
+            408 => $this->modx->lexicon('modjwt_status_408'),
+            409 => $this->modx->lexicon('modjwt_status_409'),
+            410 => $this->modx->lexicon('modjwt_status_410'),
+            413 => $this->modx->lexicon('modjwt_status_413'),
+            429 => $this->modx->lexicon('modjwt_status_429'),
+            431 => $this->modx->lexicon('modjwt_status_431'),
+            500 => $this->modx->lexicon('modjwt_status_500'),
+            501 => $this->modx->lexicon('modjwt_status_501'),
+            502 => $this->modx->lexicon('modjwt_status_502'),
+            503 => $this->modx->lexicon('modjwt_status_503'),
+            504 => $this->modx->lexicon('modjwt_status_504'),
             );
         
         $output = array(

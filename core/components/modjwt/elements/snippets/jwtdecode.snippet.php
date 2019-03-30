@@ -105,8 +105,8 @@ if (!$modJWT) {
         'errorLog'   => $log
     ));
 }
-$output = '';
 
+$output = '';
 if ($payload = $modJWT->decodeJWT()) {  //success
   $output = $modJWT->jsonData;
 } else {                                //error

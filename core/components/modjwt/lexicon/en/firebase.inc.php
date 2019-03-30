@@ -1,6 +1,6 @@
 <?php
 /**
- * en firebase topic lexicon file for modJWT extra
+ * en:firebase.inc.php topic lexicon file for modJWT extra
  *
  * Copyright 2019 by Zaenal zaenal(#)lokamaya.com
  * Created on 03-30-2019
@@ -24,7 +24,7 @@
 /**
  * Description
  * -----------
- * en firebase topic lexicon strings
+ * en:firebase.inc.php topic lexicon strings
  *
  * Variables
  * ---------
@@ -34,22 +34,20 @@
  * @package modjwt
  **/
 
-/** DEFAULT **/
+/* Used in modfirebasejwt.class.php */
 $_lang['modjwt'] = 'modJWT';
 $_lang['modjwt_secretkey_not_match'] = 'A secret key not match!';
 $_lang['modjwt_keypair_not_match']   = 'Private key and public key not match!';
-
-/** STATUS-TEXT ERROR **/
 $_lang['modjwt_error_class']      = 'Could not load modJWT class!';
 $_lang['modjwt_error_unknow_alg'] = 'Unknown algoritm: %s';
 $_lang['modjwt_error_secret_key'] = 'Secret key not available!';
-$_lang['modjwt_error_token_token'] = 'Invalid Token: %s';
+$_lang['modjwt_error_token_invalid'] = 'Invalid Token: ';
 $_lang['modjwt_error_token_expire'] = 'Token expired!';
 $_lang['modjwt_error_signature_invalid'] = 'Invalid signature!';
 $_lang['modjwt_error_signature_failed']  = 'Signature verification failed';
-$_lang['modjwt_error_header_encoding'] = 'Header error: invalid header encoding!';
-$_lang['modjwt_error_alg_empty']     = 'Header error: invalid header algorithm (alg) is empty';
-$_lang['modjwt_error_alg_nosupport'] = 'Header error: invalid header algorithm %s is not supported';
+$_lang['modjwt_error_header_empty']  = 'There is no Header part on your Token!';
+$_lang['modjwt_error_alg_empty']     = 'Header alg is empty';
+$_lang['modjwt_error_alg_nosupport'] = 'Header alg %s is not supported';
 $_lang['modjwt_error_kid_invalid'] = 'Parameter kid invalid, unable to lookup correct key';
 $_lang['modjwt_error_kid_empty']   = 'Parameter kid empty, unable to lookup correct key';
 $_lang['modjwt_error_payload_claim'] = 'Payload error: invalid claims encoding!';
