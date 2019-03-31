@@ -26,5 +26,5 @@ This extra is now available on MODx repository that can be downloaded from MODx 
 * Install modJWT
 * After successfull installation: go to the default context in modx manager, find and edit sample page /modjwt/
 
-Sample pages contain 1 HTML resouce and 3 JSON pages. You can play around with it.
+Sample pages contain 1 HTML resource and 3 JSON pages. You can play around with it.
 
