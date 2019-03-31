@@ -36,20 +36,28 @@
 
 /* Used in modfirebasejwt.class.php */
 $_lang['modjwt'] = 'modJWT';
-$_lang['modjwt_secretkey_not_match'] = 'A secret key not match!';
-$_lang['modjwt_keypair_not_match']   = 'Private key and public key not match!';
+
+$_lang['modjwt_secretkey_not_match'] = 'A secret key is not match!';
+$_lang['modjwt_keypair_not_match']   = 'Private key and public key were not match!';
 $_lang['modjwt_error_class']      = 'Could not load modJWT class!';
-$_lang['modjwt_error_unknow_alg'] = 'Unknown algoritm: %s';
-$_lang['modjwt_error_secret_key'] = 'Secret key not available!';
+$_lang['modjwt_error_secret_key'] = 'Secret key is not available!';
+
 $_lang['modjwt_error_token_invalid'] = 'Invalid Token: ';
 $_lang['modjwt_error_token_expire'] = 'Token expired!';
+
 $_lang['modjwt_error_signature_invalid'] = 'Invalid signature!';
 $_lang['modjwt_error_signature_failed']  = 'Signature verification failed';
-$_lang['modjwt_error_header_empty']  = 'There is no Header part on your Token!';
-$_lang['modjwt_error_alg_empty']     = 'Header alg is empty';
-$_lang['modjwt_error_alg_nosupport'] = 'Header alg %s is not supported';
-$_lang['modjwt_error_kid_invalid'] = 'Parameter kid invalid, unable to lookup correct key';
-$_lang['modjwt_error_kid_empty']   = 'Parameter kid empty, unable to lookup correct key';
+
+$_lang['modjwt_error_header_empty']  = 'JWT header is empty!';
+
+$_lang['modjwt_error_alg_unknow']    = 'Unknown algoritm: %s';
+$_lang['modjwt_error_alg_empty']     = 'JWT header->alg is empty';
+$_lang['modjwt_error_alg_nosupport'] = 'JWT header->alg "%s" is not supported';
+$_lang['modjwt_error_alg_nosupport'] = 'JWT header->alg "%s" is not supported';
+$_lang['modjwt_error_alg_notset']    = 'You must supply &alg or &validAlg in query';
+
+$_lang['modjwt_error_kid_invalid']   = 'Parameter kid invalid, unable to lookup correct key';
+$_lang['modjwt_error_kid_empty']     = 'Parameter kid empty, unable to lookup correct key';
 $_lang['modjwt_error_payload_claim'] = 'Payload error: invalid claims encoding!';
 $_lang['modjwt_error_nbf_timestamp'] = 'Cannot handle token prior to %s';
 $_lang['modjwt_error_iat_timestamp'] = 'Invalid time: cannot handle token prior to %s';
