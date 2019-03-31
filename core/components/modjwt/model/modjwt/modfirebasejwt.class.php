@@ -84,8 +84,12 @@ class modFirebaseJWT extends FirebaseJWT {
         $jwtType   = strtoupper($this->config['typ']) == 'JWS' ? 'JWS' : 'JWT';
         $algorithm = strtoupper($this->config['alg']);
         
+        if (empty($this->config['alg'])) {
+            return $this->outputError($this->modx->lexicon('modjwt_error_alg_empty'), 405);
+        }
+        
         if (!array_key_exists($algorithm, static::$supported_algs)) {
-            return $this->outputError("Unknown algoritm: $algorithm", 405);
+            return $this->outputError(sprintf($this->modx->lexicon('modjwt_error_alg_unknow'), $algorithm), 405);
         }
         
         $header = array(
@@ -100,7 +104,7 @@ class modFirebaseJWT extends FirebaseJWT {
         // prepare secret key
         $secretk = $this->prepareSecretKey($algorithm);
         if (!$secretk) {
-            return $this->outputError("Secret key not available!", 503);
+            return $this->outputError($this->modx->lexicon('modjwt_error_secret_key'), 503);
         }
 
         // get Token
@@ -133,6 +137,11 @@ class modFirebaseJWT extends FirebaseJWT {
         $timestamp = static::$timestamp;
         $_x = $this->modx;
         
+        // for security reason, we must supply either &alg or &validAlg
+        if (empty($this->config['alg']) && empty($this->config['validAlg'])) {
+            return $this->outputError($this->modx->lexicon('modjwt_error_alg_notset'), 405);
+        }
+        
         $token = $this->getTokenClaim($this->config['method']);
         //die($this->config['method']);
         $this->token = $token;
@@ -140,7 +149,7 @@ class modFirebaseJWT extends FirebaseJWT {
         // prepare secret key
         $secretk = $this->prepareSecretKey($algorithm);
         if (!$secretk) {
-            return $this->outputError("Secret key not available!", 503);
+            return $this->outputError($this->modx->lexicon('modjwt_error_secret_key'), 503);
         }
         
         $_tokenArray = explode('.', $token);
@@ -171,6 +180,17 @@ class modFirebaseJWT extends FirebaseJWT {
         
         if (empty($header->alg)) {
             return $this->outputError($this->modx->lexicon('modjwt_error_alg_empty'), 400);
+        }
+        
+        // for security reason, we should check $header->alg against config['alg'] or config['validAlg']
+        if (!empty($this->config['validAlg']) && is_array($this->config['validAlg'])) {
+            if (!in_array(strtoupper($header->alg),$this->config['validAlg'])) {
+                return $this->outputError($this->modx->lexicon('modjwt_error_alg_nomatch'), 400);
+            }
+        } else {
+            if (strtoupper($header->alg) !== $this->config['alg']) {
+                return $this->outputError($this->modx->lexicon('modjwt_error_alg_nomatch'), 400);
+            }
         }
         
         if (empty(static::$supported_algs[$header->alg])) {
@@ -516,8 +536,15 @@ class modFirebaseJWT extends FirebaseJWT {
         
         // Some JWT setting
         $_conf['typ'] = $this->checkConfig('typ', $configs, 'JWT');
-        $_conf['alg'] = $this->checkConfig('validAlg', $configs, $this->checkConfig('alg', $configs, 'HS256,HS384,HS512'));
         
+        // for security reason, alg should not be empty: 
+        $_conf['alg'] = $this->checkConfig('alg', $configs,'HS256');
+        
+        $validAlg = ($this->checkConfig('validAlg', $configs, null));
+        $_conf['validAlg'] = $validAlg;
+        if (!empty($validAlg)) {
+            $_conf['validAlg'] = explode(',', strtoupper($validAlg));
+        }
         
         $_conf['mimeType']         = $this->checkConfig('mimeType', $configs, 'JSON');
         $_conf['toPlaceholder']    = $this->checkConfig('toPlaceholder', $configs, null);
