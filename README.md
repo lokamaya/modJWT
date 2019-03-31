@@ -2,6 +2,13 @@
 
 **A MODx extra to works with JSON Web Token (JWT)**
 
+----
+
+Required PHP 5.5++
+
+This package using Firebase/JWT from https://github.com/firebase/php-jwt
+
+----
 
 Documentation: https://github.com/lokamaya/modJWT (next on this)
 
