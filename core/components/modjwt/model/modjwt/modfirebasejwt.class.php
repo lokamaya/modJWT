@@ -71,6 +71,13 @@ class modFirebaseJWT extends FirebaseJWT {
         $this->modx->lexicon->load('modjwt:firebase');
         
         static::$timestamp = time();
+        
+        if (!headers_sent()) {
+            //http_response_code($errorCode);
+            //header("HTTP/1.1 $errorCode " . $errorMessage[$errorCode]);
+            header("Cache-Control: no-store");
+            header("Pragma: no-cache");
+        }
     }
 
     /**
@@ -119,7 +126,7 @@ class modFirebaseJWT extends FirebaseJWT {
         $token = implode('.', $segments);
         $this->token = $token;
         
-        $this->payload = null; 
+        //$this->payload = null; 
         $this->setJSONData();
         return $token;
     }
@@ -258,8 +265,12 @@ class modFirebaseJWT extends FirebaseJWT {
         if (!empty($_audience)) $payload['aud'] = $_audience;
         
         if (!empty($payloadData) && is_string($payloadData)) {
-            $payloadData = static::jsonDecode($payloadData, true);
-            $payload = array_merge($payload, $payloadData);
+            $payloadData = json_decode($payloadData, true);
+            if (!empty($payloadData) && is_array($payloadData)) {
+                $payload = array_merge($payload, $payloadData);
+            } else {
+                //error formating data
+            }
         }
         
         return $payload;
@@ -365,9 +376,9 @@ class modFirebaseJWT extends FirebaseJWT {
       * @return string
     **/
     function getJsonToken($query) {
-        $json_request = (static::jsonDecode($request) !== NULL) ? true : false;
+        $json_request = (json_decode($request) !== NULL) ? true : false;
         
-        if ($json_request = static::jsonDecode(file_get_contents("php://input"))) {
+        if ($json_request = json_decode(file_get_contents("php://input"))) {
             $token = trim($json_request[$query]);
             return $token;
         }
@@ -556,7 +567,7 @@ class modFirebaseJWT extends FirebaseJWT {
         $_conf['iss']      = $this->checkConfig('iss', $configs, $_domain);
         $_conf['sub']      = $this->checkConfig('sub', $configs, null);
         $_conf['subField'] = $this->checkConfig('subField', $configs, 'email');
-        $_conf['aud']      = $this->checkConfig('aud', $configs, $_domain);
+        $_conf['aud']      = $this->checkConfig('aud', $configs, null);
         $_conf['jti']      = $this->checkConfig('jti', $configs, false);
         
 
