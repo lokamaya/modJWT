@@ -81,6 +81,40 @@ class modFirebaseJWT extends FirebaseJWT {
     }
 
     /**
+     * Encode a string with URL-safe Base64.
+     * * This replace static::urlsafeB64Encode from Firebase/JWT due to error
+     *
+     * @param string $input The string you want encoded
+     *
+     * @return string The base64 encode of what you passed in
+     */
+    public function base64url_encode($data, $pad = null) {
+        $data = str_replace(array('+', '/'), array('-', '_'), base64_encode($data));
+        if (!$pad) {
+            $data = rtrim($data, '=');
+        }
+        return $data;
+    }
+    
+    /**
+     * Decode a string with URL-safe Base64.
+     * This replace static::urlsafeB64Decode from Firebase/JWT due to error
+     *
+     * @param string $input A Base64 encoded string
+     *
+     * @return string A decoded string
+     */
+    public function base64url_decode($data) {
+        $data = str_replace(array('-', '_'), array('+', '/'), $data);
+        
+        $decoded = "";
+        for ($i=0; $i < ceil(strlen($data)/256); $i++) {
+            $decoded = $decoded . base64_decode(substr($data,$i*256,256));
+        }
+        return $decoded;
+    }
+    
+    /**
      * encodeJWT
      * Output JWT Token
      *
@@ -100,8 +134,8 @@ class modFirebaseJWT extends FirebaseJWT {
         }
         
         $header = array(
-            'typ' => $jwtType,
             'alg' => $algorithm,
+            'typ' => $jwtType,
             );
         
         // prepare payload
@@ -113,15 +147,14 @@ class modFirebaseJWT extends FirebaseJWT {
         if (!$secretk) {
             return $this->outputError($this->modx->lexicon('modjwt_error_secret_key'), 503);
         }
-
-        // get Token
+        
         $segments = array();
-        $segments[] = static::urlsafeB64Encode(static::jsonEncode($header));
-        $segments[] = static::urlsafeB64Encode(static::jsonEncode($payload));
-        $signing_input = implode('.', $segments);
+        $segments[] = $this->base64url_encode(static::jsonEncode($header));
+        $segments[] = $this->base64url_encode(static::jsonEncode($payload));
+        $_segment = implode('.', $segments);
 
-        $signature = static::sign($signing_input, $secretk, $algorithm);
-        $segments[] = static::urlsafeB64Encode($signature);
+        $signature = static::sign($_segment, $secretk, $algorithm);
+        $segments[] = $this->base64url_encode($signature);
         
         $token = implode('.', $segments);
         $this->token = $token;
@@ -165,28 +198,28 @@ class modFirebaseJWT extends FirebaseJWT {
         }
         
         list($headb64, $bodyb64, $cryptob64) = $_tokenArray;
-        
+         
         // verify header
-        $header = static::jsonDecode(static::urlsafeB64Decode($headb64));
+        $header = static::jsonDecode($this->base64url_decode($headb64));
         
         // verify signature
-        $signature = static::urlsafeB64Decode($cryptob64);
+        $signature = $this->base64url_decode($cryptob64);
         
         if ($signature === false) {
-            return $this->outputError($this->modx->lexicon('modjwt_error_signature_invalid'), 400);
+            return $this->outputError($this->modx->lexicon('modjwt_error_signature_invalid'), 401);
         }
         
         if (!parent::verify("$headb64.$bodyb64", $signature, $secretk, $header->alg)) {
-            return $this->outputError($this->modx->lexicon('modjwt_error_signature_failed'), 400);
+            return $this->outputError($this->modx->lexicon('modjwt_error_signature_failed'), 401);
         }
         
         // if signature OK, more on header
         if ($header === null) {
-            return $this->outputError($this->modx->lexicon('modjwt_error_header_empty'), 400);
+            return $this->outputError($this->modx->lexicon('modjwt_error_header_empty'), 401);
         }
         
         if (empty($header->alg)) {
-            return $this->outputError($this->modx->lexicon('modjwt_error_alg_empty'), 400);
+            return $this->outputError($this->modx->lexicon('modjwt_error_alg_empty'), 401);
         }
         
         // for security reason, we should check $header->alg against config['alg'] or config['validAlg']
@@ -216,7 +249,7 @@ class modFirebaseJWT extends FirebaseJWT {
         }
         
         // verify payload
-        $payload = static::jsonDecode(static::urlsafeB64Decode($bodyb64));
+        $payload = static::jsonDecode($this->base64url_decode($bodyb64));
         
         if ($payload === null) {
             return $this->outputError($this->modx->lexicon('modjwt_error_payload_claim'), 400);
@@ -238,7 +271,7 @@ class modFirebaseJWT extends FirebaseJWT {
         $decoded_payload = (array)$payload;
         $this->payload = $payload;
         
-        $this->token = null; 
+        //$this->token = null; 
         $this->setJSONData();
         return $decoded_payload;
     }
@@ -324,7 +357,7 @@ class modFirebaseJWT extends FirebaseJWT {
                     $token = isset($_POST[$query]) ? trim($_POST[$query]) : null;
                     break;
                 case 'GET':
-                    $token = isset($_GET[$query]) ? trim($_GET[$query]) : null;
+                    $token = isset($_GET[$query]) ? urldecode($_GET[$query]) : null;
                     break;
                 case 'COOKIE':
                     $token = isset($_COOKIE[$query]) ? trim($_COOKIE[$query]) : null;
@@ -376,9 +409,8 @@ class modFirebaseJWT extends FirebaseJWT {
       * @return string
     **/
     function getJsonToken($query) {
-        $json_request = (json_decode($request) !== NULL) ? true : false;
-        
-        if ($json_request = json_decode(file_get_contents("php://input"))) {
+        //$json_request = (static::jsonDecode($request) !== NULL) ? true : false;
+        if ($json_request = static::jsonDecode(file_get_contents("php://input"))) {
             $token = trim($json_request[$query]);
             return $token;
         }
