@@ -21,7 +21,9 @@
  * @package modjwt
  */
 require_once dirname(__FILE__) . '/jwt/firebase/jwt.class.php';
+require_once dirname(__FILE__) . '/jwt/firebase/src/Key.php';
 use Firebase\JWT\JWT as FirebaseJWT;
+use Firebase\JWT\Key;
 
 class modFirebaseJWT extends FirebaseJWT {
     /** @var $modx modX */
@@ -60,8 +62,6 @@ class modFirebaseJWT extends FirebaseJWT {
         $corePath = MODX_CORE_PATH . 'components/modjwt/';
         $assetsUrl = MODX_ASSETS_URL . 'components/modjwt/';
         
-        $config = $this->prepareConfig($config);
-
         $this->config = array_merge([
             'corePath' => $corePath,
             'modelPath' => $corePath . 'model/',
@@ -82,36 +82,24 @@ class modFirebaseJWT extends FirebaseJWT {
 
     /**
      * Encode a string with URL-safe Base64.
-     * * This replace static::urlsafeB64Encode from Firebase/JWT due to error
      *
      * @param string $input The string you want encoded
      *
      * @return string The base64 encode of what you passed in
      */
-    public function base64url_encode($data, $pad = null) {
-        $data = str_replace(array('+', '/'), array('-', '_'), base64_encode($data));
-        if (!$pad) {
-            $data = rtrim($data, '=');
-        }
-        return $data;
+    public function base64url_encode($input) {
+        return static::urlsafeB64Encode($input);
     }
     
     /**
      * Decode a string with URL-safe Base64.
-     * This replace static::urlsafeB64Decode from Firebase/JWT due to error
      *
      * @param string $input A Base64 encoded string
      *
      * @return string A decoded string
      */
-    public function base64url_decode($data) {
-        $data = str_replace(array('-', '_'), array('+', '/'), $data);
-        
-        $decoded = "";
-        for ($i=0; $i < ceil(strlen($data)/256); $i++) {
-            $decoded = $decoded . base64_decode(substr($data,$i*256,256));
-        }
-        return $decoded;
+    public function base64url_decode($input) {
+        return static::urlsafeB64Decode($input);
     }
     
     /**
@@ -120,48 +108,8 @@ class modFirebaseJWT extends FirebaseJWT {
      *
      * @return string
     **/
-    public function encodeJWT() {
-        // prepare header
-        $jwtType   = strtoupper($this->config['typ']) == 'JWS' ? 'JWS' : 'JWT';
-        $algorithm = strtoupper($this->config['alg']);
-        
-        if (empty($this->config['alg'])) {
-            return $this->outputError($this->modx->lexicon('modjwt_error_alg_empty'), 405);
-        }
-        
-        if (!array_key_exists($algorithm, static::$supported_algs)) {
-            return $this->outputError(sprintf($this->modx->lexicon('modjwt_error_alg_unknow'), $algorithm), 405);
-        }
-        
-        $header = array(
-            'alg' => $algorithm,
-            'typ' => $jwtType,
-            );
-        
-        // prepare payload
-        $payload = $this->preparePayload($this->config['payloadData']);
-        $this->payload = $payload;
-        
-        // prepare secret key
-        $secretk = $this->prepareSecretKey($algorithm);
-        if (!$secretk) {
-            return $this->outputError($this->modx->lexicon('modjwt_error_secret_key'), 503);
-        }
-        
-        $segments = array();
-        $segments[] = $this->base64url_encode(static::jsonEncode($header));
-        $segments[] = $this->base64url_encode(static::jsonEncode($payload));
-        $_segment = implode('.', $segments);
-
-        $signature = static::sign($_segment, $secretk, $algorithm);
-        $segments[] = $this->base64url_encode($signature);
-        
-        $token = implode('.', $segments);
-        $this->token = $token;
-        
-        //$this->payload = null; 
-        $this->setJSONData();
-        return $token;
+    public function encodeJWT($payload, $key, $alg = 'HS256', $base64sign=false, $keyId = null, $head = null) {
+        return parent::encode($payload, $key, $alg, $keyId, $head);
     }
     
     /**
@@ -170,143 +118,8 @@ class modFirebaseJWT extends FirebaseJWT {
      * 
      * @return bool
     **/
-    public function decodeJWT() {
-        // prepare header
-        $jwtType   = strtoupper($this->config['typ']) == 'JWS' ? 'JWS' : 'JWT';
-        $algorithm = strtoupper($this->config['alg']);
-        $timestamp = static::$timestamp;
-        $_x = $this->modx;
-        
-        // for security reason, we must supply either &alg or &validAlg
-        if (empty($this->config['alg']) && empty($this->config['validAlg'])) {
-            return $this->outputError($this->modx->lexicon('modjwt_error_alg_notset'), 405);
-        }
-        
-        $token = $this->getTokenClaim($this->config['method']);
-        //die($this->config['method']);
-        $this->token = $token;
-        
-        // prepare secret key
-        $secretk = $this->prepareSecretKey($algorithm);
-        if (!$secretk) {
-            return $this->outputError($this->modx->lexicon('modjwt_error_secret_key'), 503);
-        }
-        
-        $_tokenArray = explode('.', $token);
-        if (count($_tokenArray) != 3) {
-            return $this->outputError($this->modx->lexicon('modjwt_error_token_invalid') . $token, 400);
-        }
-        
-        list($headb64, $bodyb64, $cryptob64) = $_tokenArray;
-         
-        // verify header
-        $header = static::jsonDecode($this->base64url_decode($headb64));
-        
-        // verify signature
-        $signature = $this->base64url_decode($cryptob64);
-        
-        if ($signature === false) {
-            return $this->outputError($this->modx->lexicon('modjwt_error_signature_invalid'), 401);
-        }
-        
-        if (!parent::verify("$headb64.$bodyb64", $signature, $secretk, $header->alg)) {
-            return $this->outputError($this->modx->lexicon('modjwt_error_signature_failed'), 401);
-        }
-        
-        // if signature OK, more on header
-        if ($header === null) {
-            return $this->outputError($this->modx->lexicon('modjwt_error_header_empty'), 401);
-        }
-        
-        if (empty($header->alg)) {
-            return $this->outputError($this->modx->lexicon('modjwt_error_alg_empty'), 401);
-        }
-        
-        // for security reason, we should check $header->alg against config['alg'] or config['validAlg']
-        if (!empty($this->config['validAlg']) && is_array($this->config['validAlg'])) {
-            if (!in_array(strtoupper($header->alg),$this->config['validAlg'])) {
-                return $this->outputError($this->modx->lexicon('modjwt_error_alg_nomatch'), 400);
-            }
-        } else {
-            if (strtoupper($header->alg) !== $this->config['alg']) {
-                return $this->outputError($this->modx->lexicon('modjwt_error_alg_nomatch'), 400);
-            }
-        }
-        
-        if (empty(static::$supported_algs[$header->alg])) {
-            return $this->outputError(sprintf($this->modx->lexicon('modjwt_error_alg_nosupport'), $header->alg), 400);
-        }
-        
-        if (is_array($secretk) || $secretk instanceof \ArrayAccess) {
-            if (isset($header->kid)) {
-                if (!isset($secretk[$header->kid])) {
-                    return $this->outputError($this->modx->lexicon('modjwt_error_kid_invalid'), 400);
-                }
-                $secretk = $secretk[$header->kid];
-            } else {
-                return $this->outputError($this->modx->lexicon('modjwt_error_kid_empty'), 400);
-            }
-        }
-        
-        // verify payload
-        $payload = static::jsonDecode($this->base64url_decode($bodyb64));
-        
-        if ($payload === null) {
-            return $this->outputError($this->modx->lexicon('modjwt_error_payload_claim'), 400);
-        } else {
-            // is expired?
-            if (isset($payload->exp) && ($timestamp - static::$leeway) >= $payload->exp) {
-                return $this->outputError($this->modx->lexicon('modjwt_error_token_expire'), 400);
-            }
-            // is not before time?
-            if (isset($payload->nbf) && $payload->nbf > ($timestamp + static::$leeway)) {
-                return $this->outputError(sprintf($this->modx->lexicon('modjwt_error_nbf_timestamp'), date(DateTime::ISO8601, $payload->nbf)), 400);
-            }
-            // valid time?
-            if (isset($payload->iat) && $payload->iat > ($timestamp + static::$leeway)) {
-                return $this->outputError(sprintf($this->modx->lexicon('modjwt_error_iat_timestamp'), date(DateTime::ISO8601, $payload->iat)), 400);
-            }
-        }
-        
-        $decoded_payload = (array)$payload;
-        $this->payload = $payload;
-        
-        //$this->token = null; 
-        $this->setJSONData();
-        return $decoded_payload;
-    }
-    
-    /**
-     * preparePayload
-     * Prepare Payload, and merge with payloadData
-     *
-     * @var string payloadData
-     * @output array Payload
-    **/
-    public function preparePayload($payloadData='') {
-        $_issuedAt = static::$timestamp;
-        $_subject  = $this->getUserField();
-        $_audience = empty($this->config['aud']) ? null : $this->config['aud'];
-        
-        $payload = array(
-            'iss' => $this->config['iss'],
-            'iat' => $_issuedAt,
-            'exp' => $_issuedAt + $this->config['expAge']
-            );
-        
-        if (!empty($_subject))  $payload['sub'] = $_subject;
-        if (!empty($_audience)) $payload['aud'] = $_audience;
-        
-        if (!empty($payloadData) && is_string($payloadData)) {
-            $payloadData = json_decode($payloadData, true);
-            if (!empty($payloadData) && is_array($payloadData)) {
-                $payload = array_merge($payload, $payloadData);
-            } else {
-                //error formating data
-            }
-        }
-        
-        return $payload;
+    public function decodeJWT($jwt, $keyOrKeyArray, array $allowed_algs = array()) {
+        return parent::decode($jwt, $keyOrKeyArray, $allowed_algs);
     }
     
     /**
@@ -367,42 +180,6 @@ class modFirebaseJWT extends FirebaseJWT {
         }
         return $token;
     }
-
-    /**
-     * getUserField
-     * @return string
-    **/
-    public function getUserField() {
-        $_subject = $this->config['sub'];
-        $_userField = strtolower($this->config['subField']);
-        
-        $output = null;
-        
-        if (empty($_subject)) {
-            $user = $this->modx->getUser();
-            if (!$user) return 'anon';
-            
-            switch ($_userField) {
-                case 'email':
-                    if ($profile = $user->getOne('Profile')) {
-                        $output = $profile->get('email');
-                    }
-                    break;
-                case 'username':
-                    $output = $profile->get('username');
-                    break;
-                case 'id':
-                case 'userid':
-                    $output = $profile->get('id');
-                    break;
-                case 'sessionid':
-                    $output = session_id();
-                    break;
-            }
-        }
-        
-        return $output;
-    }
     
     /**
       * get access token from JSON
@@ -459,14 +236,8 @@ class modFirebaseJWT extends FirebaseJWT {
         return $headers;
     }
     
-    public function setJSONData() {
-        $output = array(
-            '_valid'      => 1,
-            'status'     => 200,
-            'statusText' => 'OK',
-            'payload' => $this->payload,
-            'token'   => $this->token
-            );
+    public function setJSONData($token) {
+        $output = array('token' => $token);
         
         if ($this->config['mimeType'] == 'json') {
             if (!headers_sent()) header('Content-Type: application/json;charset=utf-8');
@@ -474,6 +245,20 @@ class modFirebaseJWT extends FirebaseJWT {
         }
         $this->jsonData = $output;
         return $output;
+    }
+    
+    public function setJWTData($token) {
+        if (!headers_sent()) header('Content-Type: application/jwt;charset=utf-8');
+        return $token;
+    }
+    
+    public static function safeBase64Encode($input)
+    {
+        return static::urlsafeB64Encode($input);
+    }
+    public static function safeBase64Decode($input)
+    {
+        return static::urlsafeB64Decode($input);
     }
 
     
@@ -509,10 +294,8 @@ class modFirebaseJWT extends FirebaseJWT {
             );
         
         $output = array(
-            '_valid'      => 0,
-            'status'     => $errorCode,
-            'statusText' => $errorMessage[$errorCode],
-            'errorLog'   => $log,
+            'status' => $errorCode,
+            'text' => $errorMessage[$errorCode]
             );
                
         if (empty($log)) $log = $errorCode . ': ' . $errorMessage[$errorCode];
@@ -541,75 +324,4 @@ class modFirebaseJWT extends FirebaseJWT {
         return false;
     }
     
-    /** checkConfig
-      * @return mixed
-    **/
-    private function checkConfig($key, $config, $default=null) {
-        $output = isset($config[$key]) && !empty($config[$key]) ? $config[$key] : $default;
-        return $output;
-    }
-    
-    /** prepareConfig
-      * @return array
-    **/
-    private function prepareConfig($configs) {
-        $_conf = array();
-        
-        // Default configuration
-        $_conf['method']    = $this->checkConfig('method', $configs, 'HEADER,GET');
-        $_conf['httpQuery'] = $this->checkConfig('httpQuery', $configs, 'token');
-        // Secret key
-        $_conf['secretKey']  = $this->checkConfig('secretKey', $configs, $this->modx->getOption('modjwt.secretkey', null, null));
-        
-        $_conf['requestType'] = $this->checkConfig('requestType', $configs, null);
-        $_conf['privateFile'] = $this->checkConfig('privateFile', $configs, $this->modx->getOption('modjwt.privatekey', null, null));
-        $_conf['publicFile']  = $this->checkConfig('publicFile', $configs, $this->modx->getOption('modjwt.publickey', null, null));
-        if ($_conf['requestType'] == 'encode') {
-            $_conf['secretFile']  = $_conf['privateFile'];
-        } elseif ($_conf['requestType'] == 'decode') {
-            $_conf['secretFile']  = $_conf['publicFile'];
-        }
-
-        $redirectTo = $this->checkConfig('redirectTo', $configs, null);
-        $redirectScheme = $this->checkConfig('redirectScheme', $configs, 'full');
-        if (is_numeric($redirectTo)) {
-            $redirectTo = $this->modx->makeURL((int)$redirectTo, '', '', $redirectScheme);
-        }
-        $_conf['redirectTo'] = $redirectTo;
-        
-        // Some JWT setting
-        $_conf['typ'] = $this->checkConfig('typ', $configs, 'JWT');
-        
-        // for security reason, alg should not be empty: 
-        $_conf['alg'] = $this->checkConfig('alg', $configs,'HS256');
-        
-        $validAlg = ($this->checkConfig('validAlg', $configs, null));
-        $_conf['validAlg'] = $validAlg;
-        if (!empty($validAlg)) {
-            $_conf['validAlg'] = explode(',', strtoupper($validAlg));
-        }
-        
-        $_conf['mimeType']         = $this->checkConfig('mimeType', $configs, 'JSON');
-        $_conf['toPlaceholder']    = $this->checkConfig('toPlaceholder', $configs, null);
-        $_conf['debugPlaceholder'] = $this->checkConfig('debugPlaceholder', $configs, 'jwtDebug');
-        
-        $_conf['directOutput'] = !empty($_conf['toPlaceholder']) ? false : true;
-            
-        $_domain = parse_url(MODX_SITE_URL,PHP_URL_HOST);
-        $_conf['iss']      = $this->checkConfig('iss', $configs, $_domain);
-        $_conf['sub']      = $this->checkConfig('sub', $configs, null);
-        $_conf['subField'] = $this->checkConfig('subField', $configs, 'email');
-        $_conf['aud']      = $this->checkConfig('aud', $configs, null);
-        $_conf['jti']      = $this->checkConfig('jti', $configs, false);
-        
-
-        $_conf['expAge']   = (int)$this->checkConfig('expAge', $configs, 3600);
-        $_conf['nbfAge']   = (int)$this->checkConfig('nbfAge', $configs, 0);
-
-        // Payload data
-        $_conf['payloadData'] = $this->checkConfig('payloadData', $configs, null);
-        
-        $configs = array_merge($configs, $_conf);
-        return $configs;        
-    }
 }

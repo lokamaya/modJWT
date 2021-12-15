@@ -1,5 +1,7 @@
 \#*  
 .idea
+*.php0
+*.php1
 config.inc.php
 build.php
 build.schema.php
