@@ -16,14 +16,14 @@ $components = array(
     'packageName' => 'modJWT',  /* No spaces, no dashes */
     'packageNameLower' => $packageNameLower,
     'packageDescription' => 'modJWT project for MyComponent extra',
-    'version' => '1.0.0',
+    'version' => '1.1.0',
     'release' => 'beta',
     'author' => 'Zaenal',
     'email' => 'zaenal(#)lokamaya.com',
     'authorUrl' => 'https://github.com/lokamaya',
     'authorSiteName' => "Lokamaya",
     'packageDocumentationUrl' => 'https://github.com/lokamaya/modJWT',
-    'copyright' => '2019',
+    'copyright' => '2021',
 
     /* no need to edit this except to change format */
     'createdon' => strftime('%m-%d-%Y'),
@@ -207,13 +207,34 @@ $components = array(
                 ),
             ),
 
-            'jwtencode' => array( /* modjwt with static and property set(s)  */
+            'jwtencode' => array(
                 'category' => 'modJWT',
                 'description' => 'Issuing or encoding JWT Token.',
                 'static' => false,
                 'propertySets' => array(
                     'jwtencodeprops'
                 ),
+            ),
+
+            'jwtencodetesting' => array( 
+                'category' => 'modJWT',
+                'description' => 'Using sample JWT Token.',
+                'static' => false,
+                'propertySets' => array(),
+            ),
+
+            'jwtsessionsecurity' => array( 
+                'category' => 'modJWT',
+                'description' => 'Add protection layer to JWT Token.',
+                'static' => false,
+                'propertySets' => array(),
+            ),
+
+            'jwtdecoderunsnippet' => array( 
+                'category' => 'modJWT',
+                'description' => 'Sample for run-snippet.',
+                'static' => false,
+                'propertySets' => array(),
             ),
 
         ),

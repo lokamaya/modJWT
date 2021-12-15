@@ -51,10 +51,10 @@
  * &aud                     string     optional    URI of the audience/server 
  * &jti                     bool       optional    Default: false (if true, auto-populated by sessionid)
  * -------
- * &iat                     timestamp  not-used    Auto-populated: current timestamp
- * &exp                     timestamp  not-used    Auto-populated: current timestamp + expAge
- * &nbf                     timestamp  not-used    Auto-populated: current timestamp + nbfAge
- * &expAge                  integer    optional    Default: 3600 seconds or 1 hour
+ * &iat                     timestamp  auto    	   Auto-populated: current timestamp
+ * &exp                     timestamp  auto-if     Auto-populated: current timestamp + expAge
+ * &nbf                     timestamp  auto-if     Auto-populated: current timestamp + nbfAge
+ * &expAge                  integer    optional    Default: 0; if greater than 0 than &exp will be populated
  * &nbfAge                  integer    optional    Default: 0; if greater than 0 than &nbf will be populated
  * -------
  * &payloadData             json       optional    Example: `{"A":"1", "200":"enclosed with quote"}`

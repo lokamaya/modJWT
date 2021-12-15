@@ -16,7 +16,7 @@ $properties = array (
   'aud' => 
   array (
     'name' => 'aud',
-    'desc' => 'URI of the audience/server (default: your domain)',
+    'desc' => 'URI of the audience/server (example: yourdomain.com)',
     'type' => 'textfield',
     'options' => 
     array (
@@ -52,7 +52,7 @@ $properties = array (
   'iss' => 
   array (
     'name' => 'iss',
-    'desc' => 'URI of JWT issuer (default: your domain)',
+    'desc' => 'URI of JWT issuer (example: yourdomain.com)',
     'type' => 'textfield',
     'options' => 
     array (
@@ -76,7 +76,7 @@ $properties = array (
   'sub' => 
   array (
     'name' => 'sub',
-    'desc' => 'Subject or user that use the Token. If empty, auto-populated by subField value.',
+    'desc' => 'Subject or user that use the Token, by setting subField value (default: sessionid)',
     'type' => 'textfield',
     'options' => 
     array (
@@ -117,7 +117,7 @@ $properties = array (
     'options' => 
     array (
     ),
-    'value' => '3600',
+    'value' => '0',
     'lexicon' => 'en',
     'area' => 'configs',
   ),
@@ -160,12 +160,12 @@ $properties = array (
   'subField' => 
   array (
     'name' => 'subField',
-    'desc' => 'User variable to use for "sub" as subject. Default: email (options: username, email, userid, sessionid)',
+    'desc' => 'User variable to use for "sub" as subject. Default: sessionid (options: username, email, userid, sessionid)',
     'type' => 'textfield',
     'options' => 
     array (
     ),
-    'value' => 'email',
+    'value' => 'sessionid',
     'lexicon' => 'en',
     'area' => 'configs',
   ),
