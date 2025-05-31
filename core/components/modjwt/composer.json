@@ -1,0 +1,13 @@
+{
+  "require": {
+     "firebase/php-jwt": "6.11.*",
+     "paragonie/sodium_compat": ">= 1",
+     "paragonie/sodium_compat_ext_sodium": ">= 1"
+  },
+  "autoload": {
+    "psr-4": {
+      "modJWT\\": "src/"
+    }
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,10 @@
+name: modJWT
+version: 1.0.0-pl
+lowCaseName: modjwt
+namespace: modJWT
+description: 'A MODx extra to work with JWT (JSON Web Token) based on Firebase/JWT.'
+author: '@lokamaya <Zaenal Muttaqin>'
+menus:
+    -
+        text: modjwt.menu
+        action: manage
